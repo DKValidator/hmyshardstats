@@ -33,8 +33,8 @@ function App() {
     <div className="App">
       <Heading />
       <Chart
-        width={'600px'}
-        height={'400px'}
+        width={'550px'}
+        height={'350px'}
         chartType="PieChart"
         loader={<div>Loading Chart</div>}
         data={

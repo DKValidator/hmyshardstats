@@ -64,8 +64,8 @@ const Shard = ({ shard }) => {
             <h1>Shard {shard.shardId}</h1>
             <Chart
                 className="chart"
-                width={'600px'}
-                height={'300px'}
+                width={'550px'}
+                height={'350px'}
                 chartType="PieChart"
                 loader={<div>Loading Chart</div>}
                 data={
@@ -88,8 +88,8 @@ const Shard = ({ shard }) => {
             <div>External Slots: {shard.totalExternalSlots}</div>
             <br />
             <Chart
-                width={'600px'}
-                height={'600px'}
+                width={'550px'}
+                height={'350px'}
                 chartType="Table"
                 loader={<div>Loading Chart</div>}
                 data={getValidatorList(shardCommittee, shard.totalSlots)}
