@@ -1,5 +1,4 @@
 import React from 'react'
-import ShardMember from './ShardMember'
 import { useEffect, useState } from 'react';
 import { formatONE } from '../utils/numberFormat'
 import { Chart } from "react-google-charts";
@@ -9,18 +8,18 @@ function setEStakeByValidatorData(shardData, setdata) {
     //console.log(shardData);
     let data = [['Validator', 'Effective Stake']];
 
-    shardData.committeeMembers.map(shard => (
-        data.push([shard.address, shard.effectiveStake])
+    shardData.committeeMembers.map(validator => (
+        data.push([validator.address, validator.effectiveStake])
     ));
 
     setdata(data)
 }
 
-function getValidatorList(shardData, totalSlots) {
-    let data = [['Validator', 'Effective Stake', 'Slots', 'Slot %']]
+function getValidatorList(shardData, totalSlots, totalStake) {
+    let data = [['Validator', 'Effective Stake', 'Stake %', 'Slots', 'Slot %']]
     if (shardData)
-        shardData.map(shard => (
-            data.push([shard.name ? shard.name : shard.address, shard.effectiveStake, shard.keys.length, shard.keys.length / totalSlots * 100])
+        shardData.map(validator => (
+            data.push([validator.name ? validator.name : validator.address, validator.effectiveStake, validator.effectiveStake / totalStake * 100,validator.keys.length, validator.keys.length / totalSlots * 100])
         ));
 
     return data
@@ -92,7 +91,7 @@ const Shard = ({ shard }) => {
                 height={'600px'}
                 chartType="Table"
                 loader={<div>Loading Chart</div>}
-                data={getValidatorList(shardCommittee, shard.totalSlots)}
+                data={getValidatorList(shardCommittee, shard.totalSlots, shard.totalStake)}
                 options={{
                     showRowNumber: false,
                 }}
