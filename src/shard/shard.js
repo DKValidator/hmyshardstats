@@ -1,10 +1,11 @@
 export class Shard {
-    constructor(data, shard) {
+    constructor(data, shard, epoch) {
         this.shardId = shard;
         this.totalSlots = data.count;
         this.totalExternalSlots = data['external-validator-slot-count'];
         this.totalStake = Number(data['total-effective-stake'])  / 1000000000000000000;
         this.committeeMembers = this.getCommitee(data['committee-members']);
+        this.epoch = epoch;
     }
 
     getCommitee(data) {

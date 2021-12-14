@@ -1,7 +1,7 @@
 import { params } from "../params"
 import { Shard } from "../shard/shard";
 
-export const getSuperCommitties = async (setShardData) => {
+export const getSuperCommitties = async (setCurrentShardData, setPrevShardData, setEpochs) => {
     const body = {
         jsonrpc: "2.0",
         id: 1,
@@ -21,20 +21,33 @@ export const getSuperCommitties = async (setShardData) => {
     if (response.ok) {
         response.json().then(result => {
             //console.log(result);
-            processShardData(result.result, setShardData)
+            processShardData(result.result, setCurrentShardData, setPrevShardData, setEpochs)
         });
     }
 
 }
 
-const processShardData = (data, setShardData) => {
+const processShardData = (data, setCurrentShardData, setPrevShardData, setEpochs) => {
     //console.log('processing shard data')
-    const shard0 = new Shard(data.current['quorum-deciders']['shard-0'], 0);
-    const shard1 = new Shard(data.current['quorum-deciders']['shard-1'], 1);
-    const shard2 = new Shard(data.current['quorum-deciders']['shard-2'], 2);
-    const shard3 = new Shard(data.current['quorum-deciders']['shard-3'], 3);
+    const currentEpoch = data.current.epoch;
+    let shard0 = new Shard(data.current['quorum-deciders']['shard-0'], 0, currentEpoch);
+    let shard1 = new Shard(data.current['quorum-deciders']['shard-1'], 1, currentEpoch);
+    let shard2 = new Shard(data.current['quorum-deciders']['shard-2'], 2, currentEpoch);
+    let shard3 = new Shard(data.current['quorum-deciders']['shard-3'], 3, currentEpoch);
     //console.log(shard0);
-    setShardData([shard0, shard1, shard2, shard3]);
+    setCurrentShardData([shard0, shard1, shard2, shard3]);
+
+    const previousEpoch = data.previous.epoch;
+    shard0 = new Shard(data.previous['quorum-deciders']['shard-0'], 0, previousEpoch);
+    shard1 = new Shard(data.previous['quorum-deciders']['shard-1'], 1, previousEpoch);
+    shard2 = new Shard(data.previous['quorum-deciders']['shard-2'], 2, previousEpoch);
+    shard3 = new Shard(data.previous['quorum-deciders']['shard-3'], 3, previousEpoch);
+    //console.log(shard0);
+    setPrevShardData([shard0, shard1, shard2, shard3]);
+    setEpochs({
+        previous : previousEpoch,
+        current : currentEpoch
+    });
 }
 
 export const getValidatorName = async (address, setName) => {

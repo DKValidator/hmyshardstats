@@ -72,7 +72,7 @@ const Shard = ({ shard }) => {
                 }
 
                 options={{
-                    title: 'Validator Stake by Shard',
+                    title: 'Effective Stake by Validator',
                     // Just add this option
                     //is3D: true,
                     //pieHole: 0.4,
