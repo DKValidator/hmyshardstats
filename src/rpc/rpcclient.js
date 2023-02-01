@@ -1,6 +1,5 @@
 import { params } from "../params"
 import { Shard } from "../shard/shard";
-import { validatorNames } from "./validatornames";
 
 export const getSuperCommitties = async (setShardData) => {
     const body = {
@@ -18,10 +17,8 @@ export const getSuperCommitties = async (setShardData) => {
         body: JSON.stringify(body)
     });
 
-    //console.log(response);
     if (response.ok) {
         response.json().then(result => {
-            //console.log(result);
             processShardData(result.result, setShardData)
         });
     }
@@ -36,17 +33,6 @@ const processShardData = (data, setShardData) => {
     const shard3 = new Shard(data.current['quorum-deciders']['shard-3'], 3);
     //console.log(shard0);
     setShardData([shard0, shard1, shard2, shard3]);
-}
-
-export const getValidatorName = async (address, setName) => {
-    if (!address)
-        return '';
-
-    const result = await getValidatorInformation(address);
-    //console.log('Got v info')
-    //console.log(result)
-    setName(result.result.validator.name)
-
 }
 
 const getValidatorInformation = async (address) => {
@@ -66,29 +52,35 @@ const getValidatorInformation = async (address) => {
         body: JSON.stringify(body)
     });
 
-    //console.log(response);
     if (response.ok) {
         const result = await response.json();
         return result;
     }
 }
 
-export const setValidatorNames = async (validators, setData) => {
-    if (!validators) return;
+export const updateValidatorNames = async (validators, setUpdate, validatorNames, setValidatorNames) => {
+    if (!validators)
+        return;
+
+    if (!validatorNames)
+        return;
+
+    let vNames = validatorNames;
+    let name = '';
+
     for (let i = 0; i < validators.length; i++)
         if (validators[i].address) {
-            const val = validatorNames.filter((validator) => validator.address === validators[i].address);
-            if (val.length > 0)
-                validators[i].name = val[0].name
-            else {
+            name = vNames[validators[i].address];
+            validators[i].name = name
+            if (!name) {
                 const result = await getValidatorInformation(validators[i].address);
-                validators[i].name = result.result.validator.name;
-                validatorNames.push({
-                    address: validators[i].address,
-                    name: result.result.validator.name,
-                })
+                name = result.result.validator.name;
+                console.log('Got name ', name)
+                vNames[validators[i].address] = name
+                setValidatorNames(null)
+                setValidatorNames(vNames)
+                setUpdate(true);
             }
         }
-    setData(validators);
 }
 

@@ -4,6 +4,7 @@ import { getSuperCommitties } from './rpc/rpcclient'
 import Shards from './components/Shards'
 import { Chart } from "react-google-charts";
 import Heading from "./components/Heading"
+import { validatorNames as initialNames } from './rpc/validatornames';
 
 function setEStakeByShardData(shardData, setdata) {
   let data = [['Shard', 'Effective Stake']];
@@ -18,6 +19,7 @@ function App() {
   const [shardData, setShardData] = useState([]);
   const [gotData, setGotData] = useState(false);
   const [effectiveStakeByShardData, setEffectiveStakeByShardData] = useState([]);
+  const [validatorNames, setValidatorNames] = useState(initialNames)
 
   useEffect(() => {
     if (shardData.length === 0) {
@@ -50,7 +52,7 @@ function App() {
 
         rootProps={{ 'data-testid': '2' }}
       />
-      {gotData && <Shards shardData={shardData} />}
+      {gotData && <Shards shardData={shardData} validatorNames={validatorNames} setValidatorNames={(names) => setValidatorNames(names)} />}
     </div>
   );
 }

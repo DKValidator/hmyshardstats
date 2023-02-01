@@ -2,62 +2,68 @@ import React from 'react'
 import { useEffect, useState } from 'react';
 import { formatONE } from '../utils/numberFormat'
 import { Chart } from "react-google-charts";
-import { setValidatorNames } from '../rpc/rpcclient'
-import { validatorNames } from '../rpc/validatornames';
+import { updateValidatorNames } from '../rpc/rpcclient'
 
-function getValidatorId(address) {
-    const val = validatorNames.filter((validator) => validator.address === address);
-    if (val.length > 0)
-        return val[0].name
-    else
-        return address
-}
-
-function setEStakeByValidatorData(shardData, setdata) {
-    //console.log(shardData);
-    let data = [['Validator', 'Effective Stake']];
-
-    shardData.committeeMembers.map(validator => (
-        data.push([getValidatorId(validator.address), validator.effectiveStake])
-    ));
-
-    setdata(data)
-}
-
-function getValidatorList(shardData, totalSlots, totalStake) {
-    let data = [['Validator', 'Effective Stake', 'Stake %', 'Slots', 'Slot %']]
-    if (shardData)
-        shardData.map(validator => (
-            data.push([validator.name ? validator.name : validator.address, validator.effectiveStake, validator.effectiveStake / totalStake * 100, validator.keys.length, validator.keys.length / totalSlots * 100])
-        ));
-
-    return data
-}
-const Shard = ({ shard }) => {
-
+const Shard = ({ shard, validatorNames, setValidatorNames }) => {
     const [validatorStakeByShardData, setValidatorStakeByShardData] = useState([]);
 
     const [shardCommittee, setShardCommittee] = useState(null);
 
+    const [update, setUpdate] = useState(false);
+
+    function getValidatorId(address) {
+        if (!validatorNames)
+            return address;
+
+        if(validatorNames[address])
+            return validatorNames[address]
+
+        else
+            return address
+    }
+
+    function setEStakeByValidatorData(shardData, setdata) {
+        //console.log(shardData);
+        let data = [['Validator', 'Effective Stake']];
+
+        shardData.committeeMembers.map(validator => (
+            data.push([getValidatorId(validator.address), validator.effectiveStake])
+        ));
+
+        setdata(data)
+    }
+
+    function getValidatorList(shardData, totalSlots, totalStake) {
+        let data = [['Validator', 'Effective Stake', 'Stake %', 'Slots', 'Slot %']]
+        if (shardData)
+            shardData.map(validator => (
+                data.push([getValidatorId(validator.address), validator.effectiveStake, validator.effectiveStake / totalStake * 100, validator.keys.length, validator.keys.length / totalSlots * 100])
+            ));
+
+        return data
+    }
+
     useEffect(() => {
-        if (!shardCommittee && shard) {
+        if ((!shardCommittee && shard) || update) {
             const committee = shard.committeeMembers.filter(v => v.isHarmony === false);
             committee.sort((a, b) => parseFloat(b.effectiveStake) - parseFloat(a.effectiveStake));
             setShardCommittee(committee);
+            setUpdate(false)
         }
-    }, [shard, shardCommittee])
+    }, [shard, shardCommittee, update])
 
     useEffect(() => {
-        if (shardCommittee)
-            setValidatorNames(shardCommittee, setShardCommittee);
+        if (shardCommittee) {
+            updateValidatorNames(shardCommittee, setUpdate, validatorNames, setValidatorNames);
+        }
 
-    }, [shardCommittee])
+    }, [shardCommittee, setUpdate, validatorNames, setValidatorNames])
 
     useEffect(() => {
-        if (shard) {
+        if ((shard && shardCommittee) || update) {
             setEStakeByValidatorData(shard, setValidatorStakeByShardData);
         }
-    }, [shard]);
+    }, [shard, shardCommittee, setValidatorStakeByShardData, update]);
 
     return (
         <div className="shard-box">

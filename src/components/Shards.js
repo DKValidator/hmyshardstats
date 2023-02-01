@@ -1,14 +1,12 @@
 import React from 'react'
 import Shard from './Shard'
 
-const Shards = ({ shardData }) => {
-    //console.log('Shards rendering with ')
-    //console.log(shardData)
+const Shards = ({ shardData, validatorNames, setValidatorNames }) => {
     return (
         <div>
             {
                 shardData.map(shard => (
-                    <Shard key={shard.shardId} shard={shard} />
+                    <Shard key={shard.shardId} shard={shard} validatorNames={validatorNames} setValidatorNames={(names) => setValidatorNames(names)}  />
                 ))
             }
         </div>
