@@ -1,5 +1,6 @@
 import { params } from "../params"
 import { Shard } from "../shard/shard";
+import { validatorNames } from "./validatornames";
 
 export const getSuperCommitties = async (setShardData) => {
     const body = {
@@ -76,10 +77,18 @@ export const setValidatorNames = async (validators, setData) => {
     if (!validators) return;
     for (let i = 0; i < validators.length; i++)
         if (validators[i].address) {
-            const result = await getValidatorInformation(validators[i].address);
-            validators[i].name = result.result.validator.name;
+            const val = validatorNames.filter((validator) => validator.address === validators[i].address);
+            if (val.length > 0)
+                validators[i].name = val[0].name
+            else {
+                const result = await getValidatorInformation(validators[i].address);
+                validators[i].name = result.result.validator.name;
+                validatorNames.push({
+                    address: validators[i].address,
+                    name: result.result.validator.name,
+                })
+            }
         }
-
     setData(validators);
 }
 
