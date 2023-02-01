@@ -1,15 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300&display=swap');
+
+body {
+  background-color: black;
+  font-family: 'Nunito', sans-serif;
+  color: white;
+}
+
 .top-header {
   background-color: black;
   padding: 5px;
 }
-.shard-box {
-  border: solid;
-  border-radius: 5px;
-  border-color: black;
-  margin: auto;
+.top-box {
+  border: 0px;
+  border-radius: 20px;
+  background-color: rgb(57, 54, 54);
+  margin: 20px;
   padding: 10px;
+}
+
+.shard-box {
+  border: 0px;
+  border-radius: 20px;
+  background-color: rgb(57, 54, 54);
+  margin: 20px;
+  padding: 10px;
+  float: left;
+  width: 46%
 }
 
 .chart {
   margin: auto;
+  background-color: rgb(57, 54, 54);
+}
+
+@media screen and (max-width: 775px) {
+  .shard-box {
+    width: 100%;
+  }
+}
+
+.table-header {
+  color: black;
+}
+
+.table-row {
+  color: black;
 }

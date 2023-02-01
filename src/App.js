@@ -34,24 +34,33 @@ function App() {
   return (
     <div className="App">
       <Heading />
-      <Chart
-        width={'100%'}
-        height={'350px'}
-        chartType="PieChart"
-        loader={<div>Loading Chart</div>}
-        data={
-          effectiveStakeByShardData
-        }
-        
-        options={{
-          title: 'Effective Stake by Shard',
-          // Just add this option
-          //is3D: true,
-          pieHole: 0.4,
-        }}
+      <div className='top-box'>
+        {gotData &&
+          <Chart
+            width={'100%'}
+            height={'350px'}
+            chartType="PieChart"
 
-        rootProps={{ 'data-testid': '2' }}
-      />
+            loader={<div>Loading Chart...</div>}
+            data={
+              effectiveStakeByShardData
+            }
+
+            options={{
+              title: 'Effective Stake by Shard',
+              titleTextStyle: { color: 'white', fontSzie: 16, fontName: 'Nunito' },
+              backgroundColor: "#393636",
+              colors: ['#00AEE9', '#FF6F00', '#FFB800', '#69FABD'],
+              // Just add this option
+              //is3D: true,
+              pieHole: 0.4,
+              legend: { position: 'right', textStyle: { color: 'white', fontSize: 16, fontName: 'Nunito' } }
+            }}
+
+            rootProps={{ 'data-testid': '2' }}
+          />
+        }
+      </div>
       {gotData && <Shards shardData={shardData} validatorNames={validatorNames} setValidatorNames={(names) => setValidatorNames(names)} />}
     </div>
   );

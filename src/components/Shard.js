@@ -80,6 +80,9 @@ const Shard = ({ shard, validatorNames, setValidatorNames }) => {
 
                 options={{
                     title: 'Validator Effective Stake',
+                    titleTextStyle: { color: 'white', fontSzie: 16, fontName: 'Nunito' },
+                    backgroundColor: "#393636",
+                    legend: { position: 'right', textStyle: { color: 'white', fontSize: 16, fontName: 'Nunito' } },
                     // Just add this option
                     //is3D: true,
                     //pieHole: 0.4,
@@ -101,6 +104,12 @@ const Shard = ({ shard, validatorNames, setValidatorNames }) => {
                 data={getValidatorList(shardCommittee, shard.totalSlots, shard.totalStake)}
                 options={{
                     showRowNumber: false,
+                    backgroundColor: "#393636",
+                    cssClassNames: {
+                        headerRow: 'table-header',
+                        tableRow: 'table-row',
+                        oddTableRow: 'table-row',
+                    },
                 }}
                 rootProps={{ 'data-testid': '1' }}
             />
