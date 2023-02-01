@@ -92,29 +92,3 @@ export const setValidatorNames = async (validators, setData) => {
     setData(validators);
 }
 
-export const setValidatorNames2 = async (validators, setData, setGotData) => {
-    let hasChanges = false;
-    for (let i = 0; i < validators.length; i++) {
-        if (validators[i][0].startsWith('one1') && validators[i][1] !== NaN) {
-            try {
-                if (validators[i][0].startsWith('one1')) {
-                    const result = await getValidatorInformation(validators[i][0]);
-                    //console.log(result)
-                    if (!result.result.error) {
-                        validators[i][0] = result.result.validator.name;
-                        hasChanges = true;
-                    }
-                }
-            } catch (e) {
-                // no name found, who cares?
-            }
-        }
-    }
-
-    if (hasChanges) {
-        setData(validators);
-        setGotData(true);
-    }
-
-}
-
